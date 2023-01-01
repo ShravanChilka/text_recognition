@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:text_recognition/services/text_recognise_service.dart';
-import 'package:text_recognition/utils/widgets/custom_button.dart';
-import 'package:text_recognition/utils/widgets/image_view.dart';
+import '../../services/text_recognise_service.dart';
+import '../../utils/widgets/custom_button.dart';
+import '../../utils/widgets/image_view.dart';
 import '../../utils/utils.dart';
 
 class HomePage extends StatefulWidget {

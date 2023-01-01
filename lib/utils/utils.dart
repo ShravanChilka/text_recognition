@@ -9,3 +9,11 @@ class Palette {
   static const secondary500 = Color(0xFF070F25);
   static const white300 = Color(0xFFEAEEF6);
 }
+
+class DatabaseBoxKey {
+  static const savesBoxKey = 'saves_box_key';
+}
+
+class DatabaseKey {
+  static const savesKey = 'saves_key';
+}

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:text_recognition/screens_new/home_screen.dart';
+import 'package:text_recognition/services/database_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final DatabaseService databaseService = DatabaseServiceImpl();
+  await databaseService.init();
   runApp(const MyApp());
 }
 
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
         fontFamily: GoogleFonts.poppins().fontFamily,
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
