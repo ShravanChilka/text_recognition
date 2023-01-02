@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/database_provider.dart';
 import '../../utils/utils.dart';
 
 class SavesPage extends StatefulWidget {
@@ -10,16 +12,9 @@ class SavesPage extends StatefulWidget {
 }
 
 class _SavesPageState extends State<SavesPage> {
-  List<String> savesList = [
-    'Save 1',
-    'Save 2',
-    'Save 3',
-    'Save 4',
-    'Save 5',
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final databaseProvider = Provider.of<DatabaseProvider>(context);
     return Column(
       children: [
         Container(
@@ -37,7 +32,9 @@ class _SavesPageState extends State<SavesPage> {
               padding: const EdgeInsets.all(10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisSpacing: 10, mainAxisSpacing: 10, crossAxisCount: 2),
-              itemCount: savesList.length,
+              itemCount: databaseProvider.savesModelList != null
+                  ? databaseProvider.savesModelList!.length
+                  : 0,
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
@@ -47,7 +44,8 @@ class _SavesPageState extends State<SavesPage> {
                   height: 200,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Text(savesList[index]),
+                    child: Text(
+                        databaseProvider.savesModelList![index].recogniseText),
                   ),
                 );
               }),

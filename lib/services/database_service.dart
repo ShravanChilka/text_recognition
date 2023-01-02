@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:text_recognition/models/saves_model.dart';
 import 'package:text_recognition/utils/utils.dart';
@@ -7,6 +5,7 @@ import 'package:text_recognition/utils/utils.dart';
 abstract class DatabaseService {
   Future<void> init();
   Future<List<SavesModel>?> getSaves();
+  Future<void> closeBox();
   Future<void> setSaves({required List<SavesModel>? savesModelList});
 }
 
@@ -15,7 +14,7 @@ class DatabaseServiceImpl implements DatabaseService {
 
   @override
   Future<void> init() async {
-    Hive.init(Directory.current.path);
+    await Hive.initFlutter();
     registerAdapters();
     await openBox();
   }
@@ -36,5 +35,10 @@ class DatabaseServiceImpl implements DatabaseService {
   @override
   Future<void> setSaves({required List<SavesModel>? savesModelList}) async {
     await savesBox.put(DatabaseKey.savesKey, savesModelList);
+  }
+
+  @override
+  Future<void> closeBox() async {
+    await savesBox.close();
   }
 }

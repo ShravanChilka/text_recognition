@@ -7,5 +7,10 @@ class SavesModel {
   @HiveField(0)
   String recogniseText;
 
+  @override
+  toString() {
+    return 'SavesModel { recogniseText : $recogniseText }';
+  }
+
   SavesModel({required this.recogniseText});
 }

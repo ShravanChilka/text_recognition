@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:text_recognition/models/saves_model.dart';
+import '../../providers/database_provider.dart';
 import '../../services/text_recognise_service.dart';
 import '../../utils/widgets/custom_button.dart';
 import '../../utils/widgets/image_view.dart';
@@ -20,6 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final databaseProvider = Provider.of<DatabaseProvider>(context);
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -75,17 +79,30 @@ class _HomePageState extends State<HomePage> {
           ),
           Visibility(
             visible: scannedText.isNotEmpty,
-            child: Container(
-              width: double.maxFinite,
-              margin: const EdgeInsets.only(left: 16, right: 16, top: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Palette.white300,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(scannedText),
-              ),
+            child: Stack(
+              children: [
+                Container(
+                  width: double.maxFinite,
+                  margin: const EdgeInsets.only(left: 16, right: 16, top: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Palette.white300,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(scannedText),
+                  ),
+                ),
+                Positioned(
+                  right: 36,
+                  top: 30,
+                  child: GestureDetector(
+                      onTap: () => databaseProvider.addToSave(
+                          savesModel: SavesModel(recogniseText: scannedText)),
+                      child: const ImageIcon(
+                          AssetImage('$assetsPath/saves_icon.png'))),
+                )
+              ],
             ),
           )
         ],
