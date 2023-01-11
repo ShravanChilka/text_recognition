@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:text_recognition/models/saves_model.dart';
+import 'package:text_recognition/utils/widgets/custom_icon_button.dart';
 import '../../providers/database_provider.dart';
 import '../../services/text_recognise_service.dart';
-import '../../utils/widgets/custom_button.dart';
 import '../../utils/widgets/image_view.dart';
 import '../../utils/utils.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String imagePath = '';
   String scannedText = '';
+  bool isLoading = false;
   final ImagePicker picker = ImagePicker();
   final TextRecogniseService textRecogniseService = TextRecogniseServiceImpl();
 
@@ -48,35 +51,45 @@ class _HomePageState extends State<HomePage> {
               child: Column(children: [
                 const Text(
                   'Analyse Image and convert Picture to text',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 10),
                 ImageView(imagePath: imagePath),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    CustomButton(
-                      title: 'Camera',
-                      onTap: () => cameraClickEvent(context),
-                    ),
-                    const SizedBox(width: 5),
-                    CustomButton(
-                      title: 'Gallery',
-                      onTap: () => galleryClickEvent(context),
-                    ),
-                    const Spacer(),
                     Visibility(
                       visible: imagePath.isNotEmpty,
-                      child: CustomButton(
+                      child: CustomIconButton(
                         title: 'Analyse',
                         onTap: () => analyseClickEvent(context),
+                        imagePath: '$assetsPath/analyze_icon.png',
                       ),
+                    ),
+                    const Spacer(),
+                    CustomIconButton(
+                      title: '',
+                      onTap: () => cameraClickEvent(context),
+                      imagePath: '$assetsPath/camera_icon.png',
+                    ),
+                    const SizedBox(width: 5),
+                    CustomIconButton(
+                      title: '',
+                      onTap: () => galleryClickEvent(context),
+                      imagePath: '$assetsPath/gallery_icon.png',
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
               ]),
             ),
           ),
+          isLoading
+              ? LottieBuilder.network(
+                  'https://assets6.lottiefiles.com/packages/lf20_xbf1be8x.json',
+                  animate: true,
+                )
+              : const SizedBox.shrink(),
           Visibility(
             visible: scannedText.isNotEmpty,
             child: Stack(
@@ -90,18 +103,34 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Text(scannedText),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Analysed Text',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(scannedText),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomIconButton(
+                              imagePath: '$assetsPath/copy_icon.png',
+                              title: 'Copy',
+                              onTap: () => copyClickEvent(context),
+                            ),
+                            CustomIconButton(
+                              imagePath: '$assetsPath/saves_filled_icon.png',
+                              title: 'Save',
+                              onTap: () =>
+                                  saveClickEvent(context, databaseProvider),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Positioned(
-                  right: 36,
-                  top: 30,
-                  child: GestureDetector(
-                      onTap: () => databaseProvider.addToSave(
-                          savesModel: SavesModel(recogniseText: scannedText)),
-                      child: const ImageIcon(
-                          AssetImage('$assetsPath/saves_icon.png'))),
-                )
               ],
             ),
           )
@@ -137,10 +166,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   void analyseClickEvent(BuildContext context) async {
+    setState(() => isLoading = true);
     final result =
         await textRecogniseService.recogniseText(imagePath: imagePath);
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
+      isLoading = false;
       scannedText = result;
+    });
+  }
+
+  void copyClickEvent(BuildContext context) async {
+    await Clipboard.setData(ClipboardData(text: scannedText)).whenComplete(
+        () => showSnackBar(title: 'Copied to clipboard!', context: context));
+  }
+
+  void saveClickEvent(
+      BuildContext context, DatabaseProvider databaseProvider) async {
+    await databaseProvider
+        .addToSave(
+      savesModel: SavesModel(recogniseText: scannedText),
+    )
+        .whenComplete(() {
+      showSnackBar(title: 'Added to Saves', context: context);
     });
   }
 }

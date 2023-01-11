@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:text_recognition/providers/database_provider.dart';
-import 'package:text_recognition/screens_new/home_screen.dart';
+import 'package:text_recognition/screen/home_screen.dart';
 import 'package:text_recognition/services/database_service.dart';
 
 void main() async {
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         fontFamily: GoogleFonts.poppins().fontFamily,

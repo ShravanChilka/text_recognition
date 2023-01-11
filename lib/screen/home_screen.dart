@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:text_recognition/models/nav_model.dart';
-import 'package:text_recognition/screens_new/pages/home_page.dart';
-import 'package:text_recognition/screens_new/pages/saves_page.dart';
+import 'package:text_recognition/screen/pages/home_page.dart';
+import 'package:text_recognition/screen/pages/saves_page.dart';
 import 'package:text_recognition/utils/utils.dart';
 import 'package:text_recognition/utils/widgets/nav_bar.dart';
 

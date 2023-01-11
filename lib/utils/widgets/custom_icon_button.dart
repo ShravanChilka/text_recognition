@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-
 import '../utils.dart';
 
-class CustomButton extends StatelessWidget {
+class CustomIconButton extends StatelessWidget {
+  final String imagePath;
   final String title;
   final VoidCallback onTap;
-  const CustomButton({Key? key, required this.title, required this.onTap})
-      : super(key: key);
+  const CustomIconButton({
+    Key? key,
+    required this.imagePath,
+    required this.title,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +28,20 @@ class CustomButton extends StatelessWidget {
           child: Padding(
             padding:
                 const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            child: Text(
-              title,
-              style: const TextStyle(color: Colors.white),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ImageIcon(
+                  AssetImage(imagePath),
+                  size: 20,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  title,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
             ),
           ),
         ),

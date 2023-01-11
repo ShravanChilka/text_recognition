@@ -10,6 +10,15 @@ class Palette {
   static const white300 = Color(0xFFEAEEF6);
 }
 
+void showSnackBar({required String title, required BuildContext context}) =>
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        title,
+        style: const TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Palette.secondary500,
+    ));
+
 class DatabaseBoxKey {
   static const savesBoxKey = 'saves_box_key';
 }
